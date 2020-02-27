@@ -1,9 +1,9 @@
 import React from "react";
 
-export const Board = ({ children }) => {
+export const Board = ({ title,children }) => {
     return (
         <div className="Board">
-            <b>List Title</b>
+            <b>{title}</b>
             {children}
         </div>
     );
