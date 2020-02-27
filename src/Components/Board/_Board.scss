@@ -1,0 +1,9 @@
+.Board {
+  background-color: rgb(235, 236, 240);
+  border-radius: 4px;
+  padding: 8px;
+  display: grid;
+  grid-auto-rows: max-content;
+  grid-gap: 8px;
+  height: max-content;
+}
