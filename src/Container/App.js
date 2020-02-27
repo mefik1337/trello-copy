@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useRef} from 'react';
 import './App.scss';
 import {Board} from "../Components/Board/Board";
 import {Card} from "../Components/Card/Card";
@@ -6,18 +6,44 @@ import {Card} from "../Components/Card/Card";
 function App() {
     const data = [
         {title: 'To make', cards:['Card 1', 'Card 2']},
-        {title: 'In progress', cards:['Card 2', 'Card 3']},
-        {title: 'Done', cards:['Card 4', 'Card 5']},
+        {title: 'In progress', cards:['Card 3', 'Card 4']},
+        {title: 'Done', cards:['Card 5', 'Card 6']},
     ];
+    const [isDragging, setIsDragging] = useState(false);
+
+    const draggableItem = useRef();
+
+    const handleDragStart = (e, params) => {
+        console.log('Drag...', params);
+        draggableItem.current = params;
+        setIsDragging(true);
+        console.log(isDragging);
+    };
+
+    const handleStyles = (params) => {
+        const currentElement = draggableItem.current;
+        if(currentElement.itemIndex === params.itemIndex && currentElement.groupIndex === params.groupIndex) {
+            return "current Card"
+        }
+        return "Card"
+    };
 
     return (
         <div className="App">
             <h1 className="trello__title">Trello clone</h1>
             <div className="wrapper">
                 {data.map((group, groupIndex) => (
-                    <Board key={group.title}>
+                    <Board key={group.title} title={group.title}>
                         {group.cards.map((item, itemIndex) =>(
-                            <Card key={item}><p className="Card__text">{item}</p></Card>
+                            <Card key={item} >
+                                <div
+                                    className={isDragging ? handleStyles({groupIndex, itemIndex}) : "Card"}
+                                     onDragStart={e => handleDragStart(e, {groupIndex, itemIndex})}
+
+                                     draggable>
+                                    <p className="Card__text">{item}</p>
+                                </div>
+                            </Card>
                         ))}
                     </Board>
                 ))}
