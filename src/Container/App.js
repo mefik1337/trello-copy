@@ -12,27 +12,47 @@ const initialData = [
 function App() {
     const [dataState, setDataState] = useState(initialData);
     const [isDragging, setIsDragging] = useState(false);
+    const [isDraggingBoard, setIsDraggingBoard] = useState(false);
 
     const draggableItem = useRef();
     const draggableNode = useRef();
-
+    const draggableItemBoard = useRef();
+    const draggableNodeBoard = useRef();
+    //items
     const handleDragStart = (e, params) => {
-        // console.log('Drag...', params);
-        draggableNode.current = e.target;
+        e.stopPropagation();
+        draggableNode.current = e.currentTarget;
+        draggableNode.current.addEventListener('dragend', handleDragEnd);
         draggableItem.current = params;
         setTimeout(() => setIsDragging(true), 0);
     };
-
-    const handleDragEnd = () => {
+    //board
+    const handleDragStartBoard = (e, params) => {
+        draggableNodeBoard.current = e.currentTarget;
+        draggableItemBoard.current = params;
+        setTimeout(() => setIsDraggingBoard(true), 0);
+    };
+    //cart
+    const handleDragEnd = (e) => {
+        e.stopPropagation();
         setIsDragging(false);
+        draggableNode.current.removeEventListener('dragend', handleDragEnd);
         draggableItem.current = null;
         draggableNode.current = null;
     };
+    //board
+    const handleDragEndBoard = (e) => {
+        e.stopPropagation();
+        setIsDraggingBoard(false);
+        draggableItemBoard.current = null;
+        draggableNodeBoard.current = null;
+    };
+
 
     const handleDragEnter = (e, params) => {
         // console.log('enter..', params);
-        const currentItem = draggableItem.current;
-        if (e.target !== draggableNode.current) {
+        let currentItem = draggableItem.current;
+        if (e.currentTarget !== draggableNode.current) {
             // console.log("IM NOT A CURRENT TARGET! =)");
             setDataState(oldData => {
                 let newData = [...oldData];
@@ -44,13 +64,34 @@ function App() {
             })
         }
     };
-
+    const handleDragEnterBoard = (e, params) => {
+        // console.log('enter..', params);
+        let currentItem = draggableItemBoard.current;
+        if(e.currentTarget !== draggableNodeBoard.current) {
+            setDataState(oldData => {
+                let newData = [...oldData];
+                Object.values(newData[params.groupIndex])
+                    .splice(params.groupIndex, 0, Object.values(newData[currentItem.groupIndex])
+                        .splice(currentItem.groupIndex, 1)[0]);
+                draggableItemBoard.current = params;
+                return newData;
+            })
+        }
+    };
     const handleStyles = (params) => {
         const currentElement = draggableItem.current;
         if (currentElement.itemIndex === params.itemIndex && currentElement.groupIndex === params.groupIndex) {
-            return "current Card"
+            return "Card current"
         }
         return "Card"
+    };
+
+    const handleStylesBoard = (params) => {
+        const currentElement = draggableItemBoard.current;
+        if (currentElement.groupIndex === params.groupIndex) {
+            return "Board currentBoard"
+        }
+        return "Board"
     };
 
     return (
@@ -60,14 +101,19 @@ function App() {
                 {dataState.map((group, groupIndex) => (
                     <Board key={group.title}
                            title={group.title}
+                           group={group}
+                           groupIndex={groupIndex}
+                           onDragStart={e => handleDragStartBoard(e, {groupIndex})}
                            onDragEnter={isDragging ? e => handleDragEnter(e, {groupIndex, itemIndex: 0}) : null}
+                           onDragEnterBoard={isDraggingBoard ? e => handleDragEnterBoard(e, {groupIndex, cards:group.cards}) : null}
+                           onDragEnd={handleDragEndBoard}
+                           changeStylesBoard={isDraggingBoard ? handleStylesBoard({groupIndex}) : "Board"}
                     >
                         {group.cards.map((item, itemIndex) => (
                             <Card key={item}
                                   changeStyles={isDragging ? handleStyles({groupIndex, itemIndex}) : "Card"}
                                   onDragStart={e => handleDragStart(e, {groupIndex, itemIndex})}
                                   onDragEnter={isDragging ? e => handleDragEnter(e, {groupIndex, itemIndex}) : null}
-                                  onDragEnd={handleDragEnd}
                                   item={item}
                             >
                             </Card>
