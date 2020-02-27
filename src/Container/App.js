@@ -51,7 +51,6 @@ function App() {
 
     const handleDragEnter = (e, params) => {
         let currentItem = draggableItem.current;
-        console.log(currentItem.groupIndex);
         if (e.currentTarget !== draggableNode.current) {
             setDataState(oldData => {
                 let newData = [...oldData];
