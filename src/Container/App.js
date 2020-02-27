@@ -50,10 +50,9 @@ function App() {
 
 
     const handleDragEnter = (e, params) => {
-        // console.log('enter..', params);
         let currentItem = draggableItem.current;
+        console.log(currentItem.groupIndex);
         if (e.currentTarget !== draggableNode.current) {
-            // console.log("IM NOT A CURRENT TARGET! =)");
             setDataState(oldData => {
                 let newData = [...oldData];
                 newData[params.groupIndex]
@@ -65,18 +64,15 @@ function App() {
         }
     };
     const handleDragEnterBoard = (e, params) => {
-        // console.log('enter..', params);
-        let currentItem = draggableItemBoard.current;
-        if(e.currentTarget !== draggableNodeBoard.current) {
+        let currentBoard = draggableItemBoard.current;
+        if (e.currentTarget !== draggableNodeBoard.current) {
             setDataState(oldData => {
-                let newData = [...oldData];
-                Object.values(newData[params.groupIndex])
-                    .splice(params.groupIndex, 0, Object.values(newData[currentItem.groupIndex])
-                        .splice(currentItem.groupIndex, 1)[0]);
-                draggableItemBoard.current = params;
+                const newData = JSON.parse(JSON.stringify(oldData));
+                newData.splice(params.groupIndex, 0, newData.splice(currentBoard.groupIndex, 1)[0]);
                 return newData;
-            })
+            });
         }
+
     };
     const handleStyles = (params) => {
         const currentElement = draggableItem.current;
@@ -105,7 +101,7 @@ function App() {
                            groupIndex={groupIndex}
                            onDragStart={e => handleDragStartBoard(e, {groupIndex})}
                            onDragEnter={isDragging ? e => handleDragEnter(e, {groupIndex, itemIndex: 0}) : null}
-                           onDragEnterBoard={isDraggingBoard ? e => handleDragEnterBoard(e, {groupIndex, cards:group.cards}) : null}
+                           onDragEnterBoard={isDraggingBoard ? e => handleDragEnterBoard(e, {groupIndex}) : null}
                            onDragEnd={handleDragEndBoard}
                            changeStylesBoard={isDraggingBoard ? handleStylesBoard({groupIndex}) : "Board"}
                     >
