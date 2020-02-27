@@ -72,7 +72,6 @@ function App() {
                 return newData;
             });
         }
-
     };
     const handleStyles = (params) => {
         const currentElement = draggableItem.current;
