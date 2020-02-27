@@ -9,6 +9,7 @@ function App() {
         {title: 'In progress', cards:['Card 3', 'Card 4']},
         {title: 'Done', cards:['Card 5', 'Card 6']},
     ];
+
     const [isDragging, setIsDragging] = useState(false);
 
     const draggableItem = useRef();
@@ -16,8 +17,15 @@ function App() {
     const handleDragStart = (e, params) => {
         console.log('Drag...', params);
         draggableItem.current = params;
-        setIsDragging(true);
-        console.log(isDragging);
+        setTimeout(() =>
+            setIsDragging(true),0
+        );
+    };
+
+    const handleDragEnd = () => {
+        console.log('dragging over..');
+        setIsDragging(false);
+        draggableItem.current = null;
     };
 
     const handleStyles = (params) => {
@@ -39,7 +47,7 @@ function App() {
                                 <div
                                     className={isDragging ? handleStyles({groupIndex, itemIndex}) : "Card"}
                                      onDragStart={e => handleDragStart(e, {groupIndex, itemIndex})}
-
+                                     onDragEnd={handleDragEnd}
                                      draggable>
                                     <p className="Card__text">{item}</p>
                                 </div>
