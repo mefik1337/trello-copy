@@ -11,8 +11,9 @@
   .Board__title {
     font-family: $font-family;
     font-weight: 600;
-    color: #17394d;
-    font-size: 0.80rem;
+    padding: 5px;
+    color: $primary-color;
+    font-size: $main-fontsize;
   }
 }
 .currentBoard {
