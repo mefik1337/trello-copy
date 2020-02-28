@@ -1,3 +1,4 @@
+@import '../../assets/colorsAndTypography';
 .Card {
   background-Color: white;
   border-radius: 4px;
@@ -7,11 +8,12 @@
   &:hover {
     background-color: #E3E4E9;
   }
-}
-.Card__text {
-  font-family: sans-serif;
-  font-size: 0.9rem;
-}
-.current {
-  background-color: #E3E4E9;
+  .Card__text {
+    color: $primary-color;
+    font-family: $font-family;
+    font-size: 0.8rem;
+  }
+  .current {
+    background-color: #E3E4E9;
+  }
 }

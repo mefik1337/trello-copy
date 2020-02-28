@@ -1,16 +1,18 @@
+@import '../../assets/colorsAndTypography';
 .Board {
   background-color: rgb(235, 236, 240);
   border-radius: 4px;
-  padding: 8px;
+  padding: $secondary-padding;
   display: grid;
   grid-auto-rows: max-content;
-  grid-gap: 8px;
+  grid-gap: $secondary-padding;
   height: max-content;
   cursor: pointer;
   .Board__title {
-    font-family: sans-serif;
+    font-family: $font-family;
     font-weight: 600;
-    font-size: 0.9rem;
+    color: #17394d;
+    font-size: 0.80rem;
   }
 }
 .currentBoard {
