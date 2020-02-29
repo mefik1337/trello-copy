@@ -7,7 +7,10 @@
   grid-auto-rows: max-content;
   grid-gap: $secondary-padding;
   height: max-content;
-  cursor: pointer;
+  cursor: grab;
+  &:active{
+    cursor: grabbing;
+  }
   .Board__title {
     font-family: $font-family;
     font-weight: 600;
