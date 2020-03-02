@@ -15,12 +15,21 @@ function App() {
     const [isDragging, setIsDragging] = useState(false);
     const [isDraggingBoard, setIsDraggingBoard] = useState(false);
     const [columnName, setColumnName] = useState('');
+    const [errorsColumns, setErrorsColumns] = useState('');
     let [cardInput, setCardInput] = useReducer(
         (state, newState) => ({...state, ...newState}),
         {
             0: '',
             1: '',
-            2: ''
+            2: '',
+        }
+    );
+    let [errorsCards, setErrorsCardsInput] = useReducer(
+        (state, newState) => ({...state, ...newState}),
+        {
+            0: '',
+            1: '',
+            2: '',
         }
     );
     const draggableItem = useRef();
@@ -99,9 +108,15 @@ function App() {
     const handleColumnInput = (e) => {setColumnName(e.target.value)};
     const handleSubmitColumns = (e) => {
         e.preventDefault();
-      const newData = [...dataState, {title: columnName, cards: []}];
-      setDataState(newData);
-      setColumnName('');
+        setErrorsColumns('');
+            if(columnName){
+                const newData = [...dataState, {title: columnName, cards: []}];
+                setDataState(newData);
+                setColumnName('');
+            } else {
+                setErrorsColumns('Cant be empty');
+            }
+
     };
 
     const handleCardInput = (e) => {
@@ -112,11 +127,15 @@ function App() {
 
     const handleSubmitInput = (e, group, groupIndex) => {
         e.preventDefault();
-        const newData = [...dataState];
-        newData[groupIndex].cards.push(cardInput[groupIndex]);
-        setDataState(newData);
-        setCardInput({[groupIndex]: ''});
-
+        setErrorsCardsInput({[groupIndex]: ''});
+        if(cardInput[groupIndex]){
+            const newData = [...dataState];
+            newData[groupIndex].cards.push(cardInput[groupIndex]);
+            setDataState(newData);
+            setCardInput({[groupIndex]: ''});
+        } else {
+            setErrorsCardsInput({[groupIndex]: 'Can\'t be empty'});
+        }
     };
 
     return (
@@ -147,12 +166,14 @@ function App() {
                             key={groupIndex}
                             Name={cardInput[groupIndex]}
                             id={groupIndex}
+                            errors={errorsCards[groupIndex]}
                             handleSubmit={e => handleSubmitInput(e, {group}, groupIndex)}
                             handleInput={e => handleCardInput(e)}
                         />
                     </Board>
                 ))}
                     <Input
+                        errors={errorsColumns}
                         handleSubmit={handleSubmitColumns}
                         handleInput={handleColumnInput}
                         Name={columnName}

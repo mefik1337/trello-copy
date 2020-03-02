@@ -34,7 +34,9 @@ q {
   &:before, &:after {
     content: '';
     content: none; } }
-
+body {
+  background-color: #0079BE;
+}
 table {
   border-collapse: collapse;
   border-spacing: 0; }
