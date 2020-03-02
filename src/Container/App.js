@@ -48,6 +48,7 @@ function App() {
     const handleDragStartBoard = (e, params) => {
         draggableNodeBoard.current = e.currentTarget;
         draggableItemBoard.current = params;
+        setCardInput({[params.groupIndex]: ''});
         setTimeout(() => setIsDraggingBoard(true), 0);
     };
     //cart
@@ -86,6 +87,7 @@ function App() {
             setDataState(oldData => {
                 const newData = JSON.parse(JSON.stringify(oldData));
                 newData.splice(params.groupIndex, 0, newData.splice(currentBoard.groupIndex, 1)[0]);
+                draggableItem.current = params;
                 return newData;
             });
         }
@@ -150,7 +152,7 @@ function App() {
                            onDragStart={e => handleDragStartBoard(e, {groupIndex})}
                            onDragEnter={isDragging ? e => handleDragEnter(e, {groupIndex, itemIndex: 0}) : null}
                            onDragEnterBoard={isDraggingBoard ? e => handleDragEnterBoard(e, {groupIndex}) : null}
-                           onDragEnd={handleDragEndBoard}
+                           onDragEnd={e => handleDragEndBoard(e, {groupIndex})}
                            changeStylesBoard={isDraggingBoard ? handleStylesBoard({groupIndex}) : "Board"}
                     >
                         {group.cards.map((item, itemIndex) => (

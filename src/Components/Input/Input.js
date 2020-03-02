@@ -7,10 +7,21 @@ const Input = ({handleSubmit, handleInput, Name, id, errors}) => {
             <form onSubmit={handleSubmit}
                   className="Form"
             >
-                <input className={errors ? "Errors__input Input" : "Input"} type="text" onChange={handleInput}
-                       value={Name} name={id}/>
-                <input className={errors ? "Errors__submit Submit" : "Submit"} type="submit" value="+"/>
-                {errors ? <span className="Errors__text"> {errors} </span> : null}
+                <input
+                    className={errors ? "Errors__input Input" : "Input"}
+                    type="text"
+                    onChange={handleInput}
+                    value={Name}
+                    name={id}/>
+                <input
+                    className={errors ? "Errors__submit Submit" : "Submit"}
+                    type="submit"
+                    value="+"/>
+                {errors ?
+                    <span
+                        className="Errors__text">
+                        {errors}
+                    </span> : null}
             </form>
 
         </>
