@@ -11,6 +11,7 @@ const Input = ({handleSubmit, handleInput, Name, id, errors}) => {
                     className={errors ? "Errors__input Input" : "Input"}
                     type="text"
                     onChange={handleInput}
+                    placeholder="Add..."
                     value={Name}
                     name={id}/>
                 <input
