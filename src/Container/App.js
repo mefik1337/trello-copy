@@ -1,4 +1,4 @@
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef, useReducer} from 'react';
 import './App.scss';
 import {Board} from "../Components/Board/Board";
 import {Card} from "../Components/Card/Card";
@@ -15,7 +15,14 @@ function App() {
     const [isDragging, setIsDragging] = useState(false);
     const [isDraggingBoard, setIsDraggingBoard] = useState(false);
     const [columnName, setColumnName] = useState('');
-
+    let [cardInput, setCardInput] = useReducer(
+        (state, newState) => ({...state, ...newState}),
+        {
+            0: '',
+            1: '',
+            2: ''
+        }
+    );
     const draggableItem = useRef();
     const draggableNode = useRef();
     const draggableItemBoard = useRef();
@@ -89,15 +96,29 @@ function App() {
         }
         return "Board"
     };
-    const handleColumnInput = (e) => {
-      setColumnName(e.target.value);
-    };
-    const handleSubmit = (e) => {
+    const handleColumnInput = (e) => {setColumnName(e.target.value)};
+    const handleSubmitColumns = (e) => {
         e.preventDefault();
       const newData = [...dataState, {title: columnName, cards: []}];
       setDataState(newData);
       setColumnName('');
     };
+
+    const handleCardInput = (e) => {
+        const name = e.target.name;
+        const newValue = e.target.value;
+        setCardInput({[name]: newValue});
+    };
+
+    const handleSubmitInput = (e, group, groupIndex) => {
+        e.preventDefault();
+        const newData = [...dataState];
+        newData[groupIndex].cards.push(cardInput[groupIndex]);
+        setDataState(newData);
+        setCardInput({[groupIndex]: ''});
+
+    };
+
     return (
         <div className="App">
             <h1 className="trello__title">Trello clone</h1>
@@ -122,10 +143,17 @@ function App() {
                             >
                             </Card>
                         ))}
+                        <Input
+                            key={groupIndex}
+                            Name={cardInput[groupIndex]}
+                            id={groupIndex}
+                            handleSubmit={e => handleSubmitInput(e, {group}, groupIndex)}
+                            handleInput={e => handleCardInput(e)}
+                        />
                     </Board>
                 ))}
                     <Input
-                        handleSubmit={handleSubmit}
+                        handleSubmit={handleSubmitColumns}
                         handleInput={handleColumnInput}
                         Name={columnName}
                     />
