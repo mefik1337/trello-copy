@@ -2,6 +2,7 @@ import React, {useState, useRef} from 'react';
 import './App.scss';
 import {Board} from "../Components/Board/Board";
 import {Card} from "../Components/Card/Card";
+import Input from "../Components/Input/Input";
 
 const initialData = [
     {title: 'To make', cards: ['Card 1', 'Card 2']},
@@ -13,6 +14,7 @@ function App() {
     const [dataState, setDataState] = useState(initialData);
     const [isDragging, setIsDragging] = useState(false);
     const [isDraggingBoard, setIsDraggingBoard] = useState(false);
+    const [columnName, setColumnName] = useState('');
 
     const draggableItem = useRef();
     const draggableNode = useRef();
@@ -87,7 +89,15 @@ function App() {
         }
         return "Board"
     };
-
+    const handleColumnInput = (e) => {
+      setColumnName(e.target.value);
+    };
+    const handleSubmit = (e) => {
+        e.preventDefault();
+      const newData = [...dataState, {title: columnName, cards: []}];
+      setDataState(newData);
+      setColumnName('');
+    };
     return (
         <div className="App">
             <h1 className="trello__title">Trello clone</h1>
@@ -114,6 +124,11 @@ function App() {
                         ))}
                     </Board>
                 ))}
+                    <Input
+                        handleSubmit={handleSubmit}
+                        handleInput={handleColumnInput}
+                        Name={columnName}
+                    />
             </div>
         </div>
     );
