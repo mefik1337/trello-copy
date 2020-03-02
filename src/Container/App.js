@@ -114,7 +114,7 @@ function App() {
                 setDataState(newData);
                 setColumnName('');
             } else {
-                setErrorsColumns('Cant be empty');
+                setErrorsColumns('Can\'t be empty');
             }
 
     };

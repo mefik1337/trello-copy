@@ -1,0 +1,32 @@
+@import '../../assets/colorsAndTypography';
+.Input {
+  background-Color: white;
+  border-radius: 4px 0 0 4px;
+  border: none;
+  box-shadow: 0 1px 0 rgba(9, 30, 66, 0.25);
+  padding: 7px;
+  width: 70%;
+}
+.Submit {
+  background-Color: white;
+  border: none;
+  border-radius: 0 4px 4px 0;
+  box-shadow: 0 1px 0 rgba(9, 30, 66, 0.25);
+  padding: 7px;
+}
+.Errors__input {
+  border: 1px solid tomato;
+  border-right: none;
+}
+.Errors__submit {
+  border: 1px solid tomato;
+  border-left: none;
+}
+.Errors__text {
+  display: flex;
+  font-family: $font-family;
+  color: tomato;
+  font-size: 0.7rem;
+  flex-direction: column;
+  margin-left: 10px;
+}
