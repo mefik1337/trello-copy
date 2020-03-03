@@ -16,6 +16,7 @@ function App() {
     const [isDraggingBoard, setIsDraggingBoard] = useState(false);
     const [columnName, setColumnName] = useState('');
     const [errorsColumns, setErrorsColumns] = useState('');
+    const [newIndex, setNewIndex] = useState(3);
     let [cardInput, setCardInput] = useReducer(
         (state, newState) => ({...state, ...newState}),
         {
@@ -113,8 +114,12 @@ function App() {
         setErrorsColumns('');
             if(columnName){
                 const newData = [...dataState, {title: columnName, cards: []}];
+                setNewIndex(prevState => {
+                  return prevState + 1
+                });
                 setDataState(newData);
                 setColumnName('');
+                setCardInput({[newIndex]: ''});
             } else {
                 setErrorsColumns('Can\'t be empty');
             }
