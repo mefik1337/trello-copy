@@ -25,7 +25,7 @@ function App() {
             2: '',
         }
     );
-    let [errorsCards, setErrorsCardsInput] = useReducer(
+    let [errorsCards, setErrorsCards] = useReducer(
         (state, newState) => ({...state, ...newState}),
         {
             0: '',
@@ -33,22 +33,22 @@ function App() {
             2: '',
         }
     );
-    const draggableItem = useRef();
-    const draggableNode = useRef();
-    const draggableItemBoard = useRef();
-    const draggableNodeBoard = useRef();
+    const draggableCard = useRef();
+    const draggableCardNode = useRef();
+    const draggableBoard = useRef();
+    const draggableBoardNode = useRef();
     //items
     const handleDragStart = (e, params) => {
         e.stopPropagation();
-        draggableNode.current = e.currentTarget;
-        draggableNode.current.addEventListener('dragend', handleDragEnd);
-        draggableItem.current = params;
+        draggableCardNode.current = e.currentTarget;
+        draggableCardNode.current.addEventListener('dragend', handleDragEnd);
+        draggableCard.current = params;
         setTimeout(() => setIsDragging(true), 0);
     };
     //board
     const handleDragStartBoard = (e, params) => {
-        draggableNodeBoard.current = e.currentTarget;
-        draggableItemBoard.current = params;
+        draggableBoardNode.current = e.currentTarget;
+        draggableBoard.current = params;
         setCardInput({[params.groupIndex]: ''});
         setTimeout(() => setIsDraggingBoard(true), 0);
     };
@@ -56,59 +56,59 @@ function App() {
     const handleDragEnd = (e) => {
         e.stopPropagation();
         setIsDragging(false);
-        draggableNode.current.removeEventListener('dragend', handleDragEnd);
-        draggableItem.current = null;
-        draggableNode.current = null;
+        draggableCardNode.current.removeEventListener('dragend', handleDragEnd);
+        draggableCard.current = null;
+        draggableCardNode.current = null;
     };
     //board
     const handleDragEndBoard = (e) => {
         e.stopPropagation();
         setIsDraggingBoard(false);
-        draggableItemBoard.current = null;
-        draggableNodeBoard.current = null;
+        draggableBoard.current = null;
+        draggableBoardNode.current = null;
     };
 
 
     const handleDragEnter = (e, params) => {
-        let currentItem = draggableItem.current;
-        if (e.currentTarget !== draggableNode.current) {
+        let currentItem = draggableCard.current;
+        if (e.currentTarget !== draggableCardNode.current) {
             setDataState(oldData => {
                 let newData = [...oldData];
                 newData[params.groupIndex]
                     .cards.splice(params.itemIndex, 0, newData[currentItem.groupIndex]
                     .cards.splice(currentItem.itemIndex, 1)[0]);
-                draggableItem.current = params;
+                draggableCard.current = params;
                 return newData
             })
         }
     };
     const handleDragEnterBoard = (e, params) => {
-        let currentBoard = draggableItemBoard.current;
-        if (e.currentTarget !== draggableNodeBoard.current) {
+        let currentBoard = draggableBoard.current;
+        if (e.currentTarget !== draggableBoardNode.current) {
             setDataState(oldData => {
                 const newData = JSON.parse(JSON.stringify(oldData));
                 newData.splice(params.groupIndex, 0, newData.splice(currentBoard.groupIndex, 1)[0]);
-                draggableItem.current = params;
+                draggableCard.current = params;
                 return newData;
             });
         }
     };
-    const handleStyles = (params) => {
-        const currentElement = draggableItem.current;
+    const stylesCard = (params) => {
+        const currentElement = draggableCard.current;
         if (currentElement.itemIndex === params.itemIndex && currentElement.groupIndex === params.groupIndex) {
             return "Card current"
         }
         return "Card"
     };
 
-    const handleStylesBoard = (params) => {
-        const currentElement = draggableItemBoard.current;
+    const stylesBoard = (params) => {
+        const currentElement = draggableBoard.current;
         if (currentElement.groupIndex === params.groupIndex) {
             return "Board currentBoard"
         }
         return "Board"
     };
-    const handleColumnInput = (e) => {setColumnName(e.target.value)};
+    const handleChangeColumns = (e) => {setColumnName(e.target.value)};
     const handleSubmitColumns = (e) => {
         e.preventDefault();
         setErrorsColumns('');
@@ -126,22 +126,22 @@ function App() {
 
     };
 
-    const handleCardInput = (e) => {
+    const handleChangeCards = (e) => {
         const name = e.target.name;
         const newValue = e.target.value;
         setCardInput({[name]: newValue});
     };
 
-    const handleSubmitInput = (e, group, groupIndex) => {
+    const handleSubmitCards = (e, group, groupIndex) => {
         e.preventDefault();
-        setErrorsCardsInput({[groupIndex]: ''});
+        setErrorsCards({[groupIndex]: ''});
         if(cardInput[groupIndex]){
             const newData = [...dataState];
             newData[groupIndex].cards.push(cardInput[groupIndex]);
             setDataState(newData);
             setCardInput({[groupIndex]: ''});
         } else {
-            setErrorsCardsInput({[groupIndex]: 'Can\'t be empty'});
+            setErrorsCards({[groupIndex]: 'Can\'t be empty'});
         }
     };
 
@@ -158,11 +158,11 @@ function App() {
                            onDragEnter={isDragging ? e => handleDragEnter(e, {groupIndex, itemIndex: 0}) : null}
                            onDragEnterBoard={isDraggingBoard ? e => handleDragEnterBoard(e, {groupIndex}) : null}
                            onDragEnd={e => handleDragEndBoard(e, {groupIndex})}
-                           changeStylesBoard={isDraggingBoard ? handleStylesBoard({groupIndex}) : "Board"}
+                           changeStylesBoard={isDraggingBoard ? stylesBoard({groupIndex}) : "Board"}
                     >
                         {group.cards.map((item, itemIndex) => (
                             <Card key={item}
-                                  changeStyles={isDragging ? handleStyles({groupIndex, itemIndex}) : "Card"}
+                                  changeStyles={isDragging ? stylesCard({groupIndex, itemIndex}) : "Card"}
                                   onDragStart={e => handleDragStart(e, {groupIndex, itemIndex})}
                                   onDragEnter={isDragging ? e => handleDragEnter(e, {groupIndex, itemIndex}) : null}
                                   item={item}
@@ -174,15 +174,15 @@ function App() {
                             Name={cardInput[groupIndex]}
                             id={groupIndex}
                             errors={errorsCards[groupIndex]}
-                            handleSubmit={e => handleSubmitInput(e, {group}, groupIndex)}
-                            handleInput={e => handleCardInput(e)}
+                            handleSubmit={e => handleSubmitCards(e, {group}, groupIndex)}
+                            handleInput={e => handleChangeCards(e)}
                         />
                     </Board>
                 ))}
                     <Input
                         errors={errorsColumns}
                         handleSubmit={handleSubmitColumns}
-                        handleInput={handleColumnInput}
+                        handleInput={handleChangeColumns}
                         Name={columnName}
                     />
             </div>
